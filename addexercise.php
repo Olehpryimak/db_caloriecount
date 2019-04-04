@@ -21,9 +21,9 @@ if (isset($_POST['timezone'])) {
     $timezone = $obj['timezone'];
 }
 
-$products = R::find('products');
-
+$exercises = R::find('exercises');
 $day_stats = R::findOne('day_stats', 'client_id = ?', array($id));
+
 ?>
 <div class="menu_wrap row">
     <div style="margin:1%;"  class="col-md-2"><h4 style="display: inline;margin-right: 1%"></h4>
@@ -59,18 +59,12 @@ $day_stats = R::findOne('day_stats', 'client_id = ?', array($id));
             <div class="well">
                 <div class="row" style="margin: 4%">
                         <span class="col-md-4">Назва</span>
-                        <span class="col-md-2">Калорій</span>
-                        <span class="col-md-2">Жирів</span>
-                        <span class="col-md-2">Білків</span>
-                        <span class="col-md-2">Вуглеводів</span>
+                        <span class="col-md-2">Інтенсивність</span>
                     </div> 
-                <?php foreach ($products as $element): ?>
+                <?php foreach ($exercises as $element): ?>
                     <div class="well row">
                         <span class="col-md-4"><?php echo $element['name']; ?></span>
-                        <span class="col-md-2"><?php echo $element['caloriess']; ?></span>
-                        <span class="col-md-2"><?php echo $element['fats']; ?></span>
-                        <span class="col-md-2"><?php echo $element['proteins']; ?></span>
-                        <span class="col-md-2"><?php echo $element['carbohydrates']; ?></span>
+                        <span class="col-md-2"><?php echo $element['intensity']; ?></span>
                     </div> 
                 <?php endforeach; ?> 
             </div>    
