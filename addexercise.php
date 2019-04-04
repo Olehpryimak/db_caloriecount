@@ -23,7 +23,6 @@ if (isset($_POST['timezone'])) {
 
 $exercises = R::find('exercises');
 $day_stats = R::findOne('day_stats', 'client_id = ?', array($id));
-
 ?>
 <div class="menu_wrap row">
     <div style="margin:1%;"  class="col-md-2"><h4 style="display: inline;margin-right: 1%"></h4>
@@ -41,38 +40,67 @@ $day_stats = R::findOne('day_stats', 'client_id = ?', array($id));
 </div>
 <div class="container" style="margin-top: 7%">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-1">
             <div class="well">
                 <div class="row" style="margin: 4%">
-                        <span class="col-md-4">Набрано</span>
-                        <span class="col-md-2">Витрачено</span>
-                    </div> 
-                    <div class="well row">
-                        <span class="col-md-4"><?php echo $day_stats['calories_added']; ?></span>
-                        <span class="col-md-2"><?php echo $day_stats['calories_waisted']; ?></span>
-                    </div> 
+                    <span class="col-md-4">Набрано</span>
+                    <span class="col-md-2">Витрачено</span>
+                </div> 
+                <div class="well row">
+                    <span class="col-md-4"><?php echo $day_stats['calories_added']; ?></span>
+                    <span class="col-md-2"><?php echo $day_stats['calories_waisted']; ?></span>
+                </div> 
             </div>
         </div>
         <div class="col-md-7">
+            <?php
+            foreach ($exercises as $element) {
 
+                $item = $element['name'];
+                $intensity=$element['intensity'];
+                echo '<script type="text/javascript">$(document).ready(function () {
+                    let ex = "' . $item . '";
+                    let intensity = "' . $intensity . '";
+                    addExercise(ex, intensity);});</script>';
+            }
+            ?>
+            <div class="well" id="bigLeft" >
 
-            <div class="well">
+                <div class="row" >
+                    <div class=" col-md-7 ">  <input class ="input form-control" type="text"  placeholder="Назва товару" id="prodExAdd"></div>
+                     <div class=" col-md-3 ">  <input class ="input form-control" type="number" min="1" max="10"  placeholder="Інтенсивність" id="prodIntenseAdd"></div>
+                    <div class="col-lg-2 col-md-2 col-sm-4"> <button class="btn btn-primary" id="add">Додати</button></div>
+                </div>
                 <div class="row" style="margin: 4%">
-                        <span class="col-md-4">Назва</span>
-                        <span class="col-md-2">Інтенсивність</span>
-                    </div> 
-                <?php foreach ($exercises as $element): ?>
-                    <div class="well row">
-                        <span class="col-md-4"><?php echo $element['name']; ?></span>
-                        <span class="col-md-2"><?php echo $element['intensity']; ?></span>
-                    </div> 
-                <?php endforeach; ?> 
+                    <span class="col-md-4">Назва</span>
+                    <span class="col-md-2">Інтенсивність</span>
+                </div>
+                <div class="row bottomRows" id="copyThis" style="display: none" >
+                    <span class="col-md-4   exName"></span>
+                     <span class="col-md-2   intensity"></span>
+                    <span class=" col-md-4  btnBox1">
+                        <button class="btn btn-warning" id="plus">+</button>
+                        <span class="counter" id="quantity">1</span>
+                        <button class="btn btn-warning" id="minus">-</button>
+                    </span>
+                    <span class=" col-md-2 ">
+                        <button class="btn btn-default Bought" id="buy">Куплено</button>
+                    </span>
+                </div>
+
             </div>    
 
         </div>
-        <div class="col-md-3"></div>
+        <div class="col-md-2 well" style="margin: 5%">
+            <div class="row">
+                <h2>Додано</h2>
+            </div>
+            <div class="row bottomRows" id="prodLeft">
+                <span id="copyLeftEx" style="display: none">
+                    <span id="prodLeftEx"></span>
+                    <span ><button class="btn btn-warning" id="prodLeftQuantity" disabled>1</button></span>
+                </span>
+            </div>
+        </div>
     </div>
 </div>
-<script>
-    document.getElementById("tz").value = new Date().getTimezoneOffset();
-</script>

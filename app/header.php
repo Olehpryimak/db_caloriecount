@@ -1,1 +1,1 @@
-<?php require_once 'include/database.php'; ?>
+<?php require_once 'include/database.php';?>

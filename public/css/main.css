@@ -2,7 +2,7 @@
     left: 0px;
     top: 0px;
     right: 0px;
-    z-index: 999;
+    z-index: -1;
     width: 100%;
     height: 50px;
     background: -moz-linear-gradient(top, #b8e1fc 0%, #a9d2f3 10%, #90bae4 25%, #90bcea 37%, #90bff0 50%, #6ba8e5 51%, #a2daf5 83%, #bdf3fd 100%); /* firefox */
@@ -13,4 +13,45 @@
     position: fixed;
     margin-top:10px;
 }
+
+.back{
+    background-color: #eeeeee;
+    font-family:"Trebuchet MS", Helvetica, sans-serif;
+}
+
+.input{
+    border-radius: 5px;
+}
+
+#copyThis{
+    margin-top: 10px;
+    border: 1px solid  darkgray;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 18px;
+    background-color: white;
+}
+
+#copyThis2{
+    margin-top: 10px;
+}
+.counter{
+    background-color: #eeeeee;
+    border-radius: 20%;
+}
+.btnBox1{
+    text-align: right;
+}
+.prodName{
+    padding-top: 5px;
+}
+
+#prodLeftQuantity{
+    border-radius: 50%;
+}
+.intensity{
+    text-align: center;
+}
+
+
 
