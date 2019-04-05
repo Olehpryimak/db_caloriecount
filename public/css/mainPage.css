@@ -1,0 +1,73 @@
+.calendarIcon{
+    max-height: 75px;
+}
+.dateChange{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.currDate{
+    min-height: 75px;
+    min-width: 150px;
+    width: 75px;
+    height: 75px;
+    text-align: center;
+}
+.btnBackDate{
+    width: 100px;
+    height: 75px;
+background: url("https://image.flaticon.com/icons/svg/126/126492.svg");
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 20px;
+    border: black solid 3px;
+}
+.bthDateForward{
+    width: 100px;
+    height: 75px;
+    background: url("https://image.flaticon.com/icons/svg/126/126490.svg");
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 20px;
+    border: black solid 3px;
+}
+.bthDateForward:hover{
+    box-shadow: -5px 5px 5px rgba(0,0,0,0.5);
+    background-color: white;
+}
+.btnBackDate:hover{
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    background-color: white;
+}
+.productsConsumed{
+  background-color: white;
+    min-width: 40%;
+    min-height: 300px;
+    border-radius: 20px;
+
+}
+.exercisesCompleted{
+    background-color: white;
+    min-width: 40%;
+    min-height: 300px;
+    border-radius: 20px;
+}
+.info{
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-around;
+}
+.exampleConsumed{
+    margin: 15px;
+}
+.prodConsName, .prodConsumedCal, .prodConsumedCarbo, .prodConsumedFats, .prodConsumedProt, .prodConsumedPort{
+    text-align: center;
+    border-right: black solid 1px ;
+    border-top: black solid 1px;
+
+}
+.prodConsName{
+    border-left: black solid 1px ;
+}
