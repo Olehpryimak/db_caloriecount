@@ -6,6 +6,7 @@ class User {
 
     var $id;
     var $timezone;
+    var $date;
     var $coach;
 
     function Gettz() {
@@ -14,6 +15,13 @@ class User {
 
     function Settz($tz) {
         $this->timezone = $tz;
+    }
+    function Getdate() {
+        echo $this->$date;
+    }
+
+    function Setdate($tz) {
+        $this->date = $tz;
     }
 
     function Getid() {
@@ -237,6 +245,7 @@ class User {
                         $object = new User;
                         $object->Setid($user['id']);
                         $object->Settz($_POST['timezone']);
+                        $object->Setdate(date("Y-m-d"));
                         if(isset($user['sdate'])){
                             $object->SetCoach(FALSE);
                         }

@@ -36,7 +36,7 @@ if (isset($data['add_training'])) {
     $us->client_id = $id;
     $us->exercise_id = $data['id'];
     $us->time = $data['time'];
-    $us->date= $today;
+    $us->date = $today;
     R::store($us);
 
     $exercises = R::load('exercises', $data['id']);
@@ -44,15 +44,16 @@ if (isset($data['add_training'])) {
 
     $day_stats = R::findOne('daystats', 'client_id = ? AND date = ?', array($id, $today));
     if ($day_stats) {
+        $old_date_timestamp = strtotime($today);
+        $new_date = date('Y-m', $old_date_timestamp);
         $c = $day_stats['calories_added'];
         $p = $day_stats['proteins_added'];
         $f = $day_stats['fats_added'];
         $ca = $day_stats['carbohydrates_added'];
         $cw = $day_stats['calories_waisted'];
-        R::trash($day_stats);
 
 
-        $day = R::dispense('daystats');
+        $day = R::load('daystats', $day_stats['id']);
         $day->proteins_added = $p;
         $day->fats_added = $f;
         $day->calories_added = $c;
@@ -61,16 +62,99 @@ if (isset($data['add_training'])) {
         $day->date = $today;
         $day->client_id = $id;
         R::store($day);
+        $month_stats = R::findOne('monthstats', 'id = ?', array($day_stats['month_id']));
+        $day_ = R::findOne('daystats', 'id = ?', array($day_stats['id']));
+
+        if ($month_stats) {
+            $c5 = $month_stats['calories_added'];
+            $p5 = $month_stats['proteins_added'];
+            $f5 = $month_stats['fats_added'];
+            $ca5 = $month_stats['carbohydrates_added'];
+            $cw5 = $month_stats['calories_waisted'];
+            $days = $month_stats['days'];
+            $date5 = $month_stats['date'];
+
+            $month = R::load('monthstats', $month_stats['id']);
+            $month->proteins_added = ($p5 * $days + 0) / ($days );
+            $month->fats_added = ($f5 * $days + 0) / ($days);
+            $month->calories_added = ($c5 * $days + 0) / ($days);
+            $month->carbohydrates_added = ($ca5 * $days + 0) / ($days);
+            $month->calories_waisted = ($cw5 * $days + $data['time'] * $exercises['intensity'] * 10) / ($days);
+            $month->date = $date5;
+            $month->days = $days;
+            R::store($month);
+        } else {
+            $n1 = R::dispense('monthstats');
+            $n1->proteins_added = 0;
+            $n1->fats_added = 0;
+            $n1->calories_added = 0;
+            $n1->carbohydrates_added = 0;
+            $n1->calories_waisted = $data['time'] * $exercises['intensity'] * 10;
+            $n1->date = $new_date;
+            $n1->days = 1;
+            $n1->client_id = $id;
+            R::store($n1);
+        }
     } else {
-        $day = R::dispense('daystats');
-        $day->proteins_added = ($product['proteins'] * $data['weight']) / 100;
-        $day->calories_added = ($product['caloriess'] * $data['weight']) / 100;
-        $day->fats_added = ($product['fats'] * $data['weight']) / 100;
-        $day->carbohydrates_added = ($product['carbohydrates'] * $data['weight']) / 100;
-        $day->calories_waisted = 0;
-        $day->date = $today;
-        $day->client_id = $id;
-        R::store($day);
+        $old_date_timestamp = strtotime($today);
+        $new_date = date('Y-m', $old_date_timestamp);
+        $m = R::findOne('monthstats', 'client_id = ? AND date = ?', array($id, $new_date));
+        if ($m) {
+
+            $c5 = $m['calories_added'];
+            $p5 = $m['proteins_added'];
+            $f5 = $m['fats_added'];
+            $ca5 = $m['carbohydrates_added'];
+            $cw5 = $m['calories_waisted'];
+            $days = $m['days'];
+            $date5 = $m['date'];
+
+            $day = R::dispense('daystats');
+            $day->proteins_added = 0;
+            $day->calories_added = 0;
+            $day->fats_added = 0;
+            $day->carbohydrates_added = 0;
+            $day->calories_waisted = $data['time'] * $exercises['intensity'] * 10;
+            $day->date = $today;
+            $day->client_id = $id;
+            $day->month_id = $m['id'];
+            R::store($day);
+            $day_ = R::findOne('daystats', 'client_id = ? AND date = ?', array($id, $today));
+
+            $n1 = R::load('monthstats', $m['id']);
+            $n1->proteins_added = ($p5 * $days + $day_['proteins_added']) / ($days + 1);
+            $n1->fats_added = ($f5 * $days + $day_['fats_added']) / ($days + 1);
+            $n1->calories_added = ($c5 * $days + $day_['calories_added']) / ($days + 1);
+            $n1->carbohydrates_added = ($ca5 * $days + $day_['carbohydrates_added']) / ($days + 1);
+            $n1->calories_waisted = ($cw5 * $days + $day_['calories_added']) / ($days + 1);
+            $n1->date = $date5;
+            $n1->days = $days + 1;
+            R::store($n1);
+        } else {
+            $n1 = R::dispense('monthstats');
+            $n1->proteins_added = 0;
+            $n1->fats_added = 0;
+            $n1->calories_added = 0;
+            $n1->carbohydrates_added = 0;
+            $n1->calories_waisted = $data['time'] * $exercises['intensity'] * 10;
+            $n1->date = $new_date;
+            $n1->days = 1;
+            $n1->client_id = $id;
+            R::store($n1);
+
+
+            $t = R::findOne('monthstats', 'client_id = ? AND date = ?', array($id, $new_date));
+            $day = R::dispense('daystats');
+            $day->proteins_added = 0;
+            $day->calories_added = 0;
+            $day->fats_added = 0;
+            $day->carbohydrates_added = 0;
+            $day->calories_waisted = $data['time'] * $exercises['intensity'] * 10;
+            $day->date = $today;
+            $day->client_id = $id;
+            $day->month_id = $t['id'];
+            R::store($day);
+        }
     }
 }
 
@@ -159,19 +243,19 @@ $day_stats = R::findOne('day_stats', 'client_id = ?', array($id));
 
             </div>
         </div>
-<?php
-foreach ($exercises as $element) {
+        <?php
+        foreach ($exercises as $element) {
 
-    $item = $element['name'];
-    $intensity = $element['intensity'];
-    $id = $element['id'];
-    echo '<script type="text/javascript">$(document).ready(function () {
+            $item = $element['name'];
+            $intensity = $element['intensity'];
+            $id = $element['id'];
+            echo '<script type="text/javascript">$(document).ready(function () {
                     let ex = "' . $item . '";
                     let intensity = "' . $intensity . '";
                     let id = "' . $id . '";
                     addExercise(ex, intensity,id);});</script>';
-}
-?>
+        }
+        ?>
         <div class="col-md-6">
             <div class="well" id="bigLeft" >
                 <div class="row" >

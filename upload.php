@@ -41,23 +41,23 @@ if (isset($data['add_record'])) {
     $user->client_id = $id;
     $user->product_id = $data['id'];
     $user->portion = $data['weight'];
-    $user->date= $today;
+    $user->date = $today;
     R::store($user);
 
     $product = R::load('products', $data['id']);
 
-   
+
     $day_stats = R::findOne('daystats', 'client_id = ? AND date = ?', array($id, $today));
     if ($day_stats) {
+        $old_date_timestamp = strtotime($today);
+        $new_date = date('Y-m', $old_date_timestamp);
         $c = $day_stats['calories_added'];
         $p = $day_stats['proteins_added'];
         $f = $day_stats['fats_added'];
         $ca = $day_stats['carbohydrates_added'];
         $cw = $day_stats['calories_waisted'];
-        R::trash($day_stats);
 
-
-        $day = R::dispense('daystats');
+        $day = R::load('daystats', $day_stats['id']);
         $day->proteins_added = $p + ($product['proteins'] * $data['weight']) / 100;
         $day->fats_added = $f + ($product['fats'] * $data['weight']) / 100;
         $day->calories_added = $c + ($product['caloriess'] * $data['weight']) / 100;
@@ -66,38 +66,122 @@ if (isset($data['add_record'])) {
         $day->date = $today;
         $day->client_id = $id;
         R::store($day);
-    } else {
-        $day = R::dispense('daystats');
-        $day->proteins_added = ($product['proteins'] * $data['weight']) / 100;
-        $day->calories_added = ($product['caloriess'] * $data['weight']) / 100;
-        $day->fats_added = ($product['fats'] * $data['weight']) / 100;
-        $day->carbohydrates_added = ($product['carbohydrates'] * $data['weight']) / 100;
-        $day->calories_waisted = 0;
-        $day->date = $today;
-        $day->client_id = $id;
-        R::store($day);
-    }
 
-    
+        $month_stats = R::findOne('monthstats', 'id = ?', array($day_stats['month_id']));
+        $day_ = R::findOne('daystats', 'id = ?', array($day_stats['id']));
+        if ($month_stats) {
+            $c5 = $month_stats['calories_added'];
+            $p5 = $month_stats['proteins_added'];
+            $f5 = $month_stats['fats_added'];
+            $ca5 = $month_stats['carbohydrates_added'];
+            $cw5 = $month_stats['calories_waisted'];
+            $days = $month_stats['days'];
+            $date5 = $month_stats['date'];
+
+            $month = R::load('monthstats', $month_stats['id']);
+            $month->proteins_added = ($p5 * $days + ($product['proteins'] * $data['weight']) / 100) / ($days );
+            $month->fats_added = ($f5 * $days + ($product['fats'] * $data['weight']) / 100) / ($days);
+            $month->calories_added = ($c5 * $days + ($product['caloriess'] * $data['weight']) / 100) / ($days);
+            $month->carbohydrates_added = ($ca5 * $days + ($product['carbohydrates'] * $data['weight']) / 100) / ($days);
+            $month->calories_waisted = ($cw5 * $days + 0) / ($days);
+            $month->date = $date5;
+            $month->days = $days;
+            R::store($month);
+        } else {
+            $n1 = R::dispense('monthstats');
+            $n1->proteins_added = ($product['proteins'] * $data['weight']) / 100;
+            $n1->fats_added = ($product['fats'] * $data['weight']) / 100;
+            $n1->calories_added = ($product['caloriess'] * $data['weight']) / 100;
+            $n1->carbohydrates_added = ($product['carbohydrates'] * $data['weight']) / 100;
+            $n1->calories_waisted = 0;
+            $n1->date = $new_date;
+            $n1->days = 1;
+            $n1->client_id = $id;
+            R::store($n1);
+        }
+    } else {
+        $old_date_timestamp = strtotime($today);
+        $new_date = date('Y-m', $old_date_timestamp);
+        $m = R::findOne('monthstats', 'client_id = ? AND date = ?', array($id, $new_date));
+        if ($m) {
+
+            $c5 = $m['calories_added'];
+            $p5 = $m['proteins_added'];
+            $f5 = $m['fats_added'];
+            $ca5 = $m['carbohydrates_added'];
+            $cw5 = $m['calories_waisted'];
+            $days = $m['days'];
+            $date5 = $m['date'];
+
+            $day = R::dispense('daystats');
+            $day->proteins_added = ($product['proteins'] * $data['weight']) / 100;
+            $day->calories_added = ($product['caloriess'] * $data['weight']) / 100;
+            $day->fats_added = ($product['fats'] * $data['weight']) / 100;
+            $day->carbohydrates_added = ($product['carbohydrates'] * $data['weight']) / 100;
+            $day->calories_waisted = 0;
+            $day->date = $today;
+            $day->client_id = $id;
+            $day->month_id = $m['id'];
+            R::store($day);
+            $day_ = R::findOne('daystats', 'client_id = ? AND date = ?', array($id, $today));
+
+            $n1 = R::load('monthstats', $m['id']);
+            $n1->proteins_added = ($p5 * $days + $day_['proteins_added']) / ($days + 1);
+            $n1->fats_added = ($f5 * $days + $day_['fats_added']) / ($days + 1);
+            $n1->calories_added = ($c5 * $days + $day_['calories_added']) / ($days + 1);
+            $n1->carbohydrates_added = ($ca5 * $days + $day_['carbohydrates_added']) / ($days + 1);
+            $n1->calories_waisted = ($cw5 * $days + $day_['calories_added']) / ($days + 1);
+            $n1->date = $date5;
+            $n1->days = $days + 1;
+            R::store($n1);
+        } else {
+            $n1 = R::dispense('monthstats');
+            $n1->proteins_added = ($product['proteins'] * $data['weight']) / 100;
+            $n1->fats_added = ($product['fats'] * $data['weight']) / 100;
+            $n1->calories_added = ($product['caloriess'] * $data['weight']) / 100;
+            $n1->carbohydrates_added = ($product['carbohydrates'] * $data['weight']) / 100;
+            $n1->calories_waisted = 0;
+            $n1->date = $new_date;
+            $n1->days = 1;
+            $n1->client_id = $id;
+            R::store($n1);
+
+
+            $t = R::findOne('monthstats', 'client_id = ? AND date = ?', array($id, $new_date));
+            $day = R::dispense('daystats');
+            $day->proteins_added = ($product['proteins'] * $data['weight']) / 100;
+            $day->calories_added = ($product['caloriess'] * $data['weight']) / 100;
+            $day->fats_added = ($product['fats'] * $data['weight']) / 100;
+            $day->carbohydrates_added = ($product['carbohydrates'] * $data['weight']) / 100;
+            $day->calories_waisted = 0;
+            $day->date = $today;
+            $day->client_id = $id;
+            $day->month_id = $t['id'];
+            R::store($day);
+        }
+    }
 }
 
 $c1 = 0;
-    $p1 = 0;
-    $f1 = 0;
-    $ca = 0;
-    $cw = 0;
-    $day_stats = R::findOne('daystats', 'client_id = ? AND date = ?', array($id, $today));
+$p1 = 0;
+$f1 = 0;
+$ca = 0;
+$cw = 0;
+$day_stats = R::findOne('daystats', 'client_id = ? AND date = ?', array($id, $today));
 
-    if ($day_stats) {
-        $c1 = $day_stats['calories_added'];
-        $p1 = $day_stats['proteins_added'];
-        $f1 = $day_stats['fats_added'];
-        $ca = $day_stats['carbohydrates_added'];
-        $cw = $day_stats['calories_waisted'];
-    }
+if ($day_stats) {
+    $c1 = $day_stats['calories_added'];
+    $p1 = $day_stats['proteins_added'];
+    $f1 = $day_stats['fats_added'];
+    $ca = $day_stats['carbohydrates_added'];
+    $cw = $day_stats['calories_waisted'];
+}
 
 
 $products = R::find('products');
+$cat = R::load('products', 1);
+$cat->proteins = 90;
+R::store($cat);
 ?>
 <div class="menu_wrap">
     <a href="mainpage.php"> <div   class="col-md-1 navElementImg" ><img src="https://image.flaticon.com/icons/svg/25/25694.svg" class="homeImg" style="display:inline-block;"></div></a>
