@@ -190,7 +190,7 @@ R::store($cat);
     <div   class="col-md-1 navElement">
     </div>
     <div class="col-md-4 navElementName"><h2 class="webName">Рахуємо калорії</h2></div>
-    <div style="text-align: right; height: 100%; padding-top:13px;" class="col-md-3 "><h4 style="text-align: right; display: inline; color: white; margin-right: 1%;  "><?php echo $user['fname'] . ' ' . $user['name'] . ' ' . $user['pob']; ?></h4>
+    <div style="text-align: right; height: 100%; padding-top:13px;" class="col-md-3 "><h4 style="text-align: right; display: inline; color: white; margin-right: 1%;  "><?php echo $user['fname'] . ' ' . $user['name'] . ' ' . $user['pob'].' [ К ]'; ?></h4>
     </div>
     <a href="logout.php" class="navElementImg col-md-1" style="padding-left: 0px; padding-top:8px;"><img src="https://image.flaticon.com/icons/svg/126/126467.svg "  width="32" height="32"></a>
 </div>

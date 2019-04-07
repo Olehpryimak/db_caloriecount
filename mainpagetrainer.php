@@ -66,7 +66,7 @@ $cl_id = -1;
 
 
 
-
+$today = date("Y-m-d");
 $today = date("Y-m-d");
 
 $clients = R::find('users', 'coach = ?', array($id));
@@ -214,7 +214,7 @@ foreach ($clients as $client) {
                     let ids = "' . $ids . '";
                     addClients(item,ids);});</script>';
 }
-$today = date("Y-m-d");
+
 
 if (isset($data['btnBackDate'])) {
 
@@ -289,8 +289,7 @@ updateProgress(cp, pp, fp,cap,cp2,pp2,fp2,cap2);});</script>';
     <?php if ($cl_id != -1): ?>
         <div   class="col-md-1  navElement navLinks" style="font-size:20px" ><?php echo $user['fname']; ?></div>
     <?php else : ?>
-        <div   class="col-md-1" ></div>
-    <?php endif; ?>    
+    <?php endif; ?>
     <ul class="col-md-2 navElement">
         <li class="col-md-12"><a href="" class="navLinks">Клієнти</a>
             <ul class="col-md-12 " id="navList">
@@ -298,12 +297,15 @@ updateProgress(cp, pp, fp,cap,cp2,pp2,fp2,cap2);});</script>';
             </ul>
         </li>
     </ul>
+    <ul class="col-md-2 navElement">
+        <a href="addClient.php" class="navLinks">Додати клієнта</a>
+    </ul>
 
-    <div class="col-md-5 navElementName"><h2 class="webName">Рахуємо калорії</h2></div>
-    <div style="text-align: right; height: 100%; padding-top:13px;" class="col-md-3 "><h4 style="text-align: right; display: inline; color: white; margin-right: 1%;  "><?php echo $user1['fname'] . ' ' . $user1['name'] . ' ' . $user1['pob']; ?></h4>
+    <div class="col-md-3 navElementName"><h2 class="webName">Рахуємо калорії</h2></div>
+    <div style="text-align: right; height: 100%; padding-top:13px;" class="col-md-3 "><h4 style="text-align: right; display: inline; color: white; margin-right: 1%;  "><?php echo $user1['fname'] . ' ' . $user1['name'] . ' ' . $user1['pob'] . ' [ T ]'; ?></h4>
     </div>
     <a href="logout.php" class="navElementImg col-md-1" style="padding-left: 0px; padding-top:8px;"><img src="https://image.flaticon.com/icons/svg/126/126467.svg "  width="32" height="32"></a>
-</div>
+</nav>
 <?php if ($cl_id != -1): ?>
     <div class="continer-fluid" style="margin-top: 6%">
         <div class="container"> 
@@ -424,5 +426,10 @@ updateProgress(cp, pp, fp,cap,cp2,pp2,fp2,cap2);});</script>';
                 <?php endforeach; ?>
             </div>
         </div>
+    </div>
+<?php else : ?>
+    <div class="col-md-3"></div>
+    <div class="well col-md-6" style="margin-top:15%; text-align: center; font-size: 20px">
+        <div class="well">Виберіть клієнта</div>
     </div>
 <?php endif; ?>
