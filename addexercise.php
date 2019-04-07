@@ -7,12 +7,8 @@ include_once './public/../app/header2.php';
 $obj = (array) ($_SESSION['logged_user']);
 
 $id = $obj['id'];
-$coach = $obj['coach'];
-if ($coach == TRUE) {
-    $user = R::findOne('coachs', 'id = ?', array($id));
-} else {
-    $user = R::findOne('users', 'id = ?', array($id));
-}
+$user = R::findOne('users', 'id = ?', array($id));
+
 
 $errors;
 if (isset($_POST['timezone'])) {
@@ -186,8 +182,7 @@ $day_stats = R::findOne('day_stats', 'client_id = ?', array($id));
     <div   class="col-md-1 navElement"><h4 style="display: inline;margin-right: 1%"></h4>
         <a href="addexercise.php" class="navLinks">Додати вправу</a>
     </div>
-    <div   class="col-md-1 navElement"><h4 style="display: inline;margin-right: 1%"></h4>
-        <a href="checkstats.php" class="navLinks">Статистика</a>
+    <div   class="col-md-1 navElement">
     </div>
     <div class="col-md-4 navElementName"><h2 class="webName">Рахуємо калорії</h2></div>
     <div style="text-align: right; height: 100%; padding-top:13px;" class="col-md-3 "><h4 style="text-align: right; display: inline; color: white; margin-right: 1%;  "><?php echo $user['fname'] . ' ' . $user['name'] . ' ' . $user['pob']; ?></h4>

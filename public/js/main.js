@@ -74,3 +74,12 @@ function updateProgress(calL, protL, fatsL, carboL, calM , protM, fatsM, carboM)
     $("#carboProgM").attr('value', carboM);
     
 }
+
+function addClients (name, id){
+    var $newListItem = $(".copyThisLiItem").clone().appendTo("#navList");
+    $newListItem.find("#secretInput").attr('value', id);
+    $newListItem.find("#listItemText").text(name);
+    $newListItem.removeClass("copyThisLiItem");   
+    $newListItem.show();
+    
+}

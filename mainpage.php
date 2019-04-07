@@ -6,6 +6,7 @@ if (!isset($_SESSION['logged_user'])) {
 
 
 include_once './public/../app/header2.php';
+
 class User {
 
     var $id;
@@ -20,6 +21,7 @@ class User {
     function Settz($tz) {
         $this->timezone = $tz;
     }
+
     function Getdate() {
         echo $this->$date;
     }
@@ -35,7 +37,7 @@ class User {
     function Setid($id) {
         $this->id = $id;
     }
-    
+
     function GetCoach() {
         echo $this->coach;
     }
@@ -46,19 +48,11 @@ class User {
 
 }
 
-
 $obj = (array) ($_SESSION['logged_user']);
 
 $id = $obj['id'];
-$coach = $obj['coach'];;
-if ($coach == FALSE) {
-    $user = R::findOne('users', 'id = ?', array($id));
-   
-    
-} else {
-    
-    $user = R::findOne('coachs', 'id = ?', array($id));
-}
+$user = R::findOne('users', 'id = ?', array($id));
+
 $errors;
 if (isset($_POST['timezone'])) {
     $timezone = $_POST['timezone'];
@@ -78,6 +72,7 @@ if (isset($data['btnBackDate'])) {
     $object->SetCoach($coach);
 
 
+
     $_SESSION ['logged_user'] = $object;
 } else if (isset($data['bthDateForward'])) {
     $date = $obj['date'];
@@ -94,10 +89,18 @@ if (isset($data['btnBackDate'])) {
 $meals = R::find('meal', 'client_id = ? AND date = ?', array($id, $today));
 $training = R::find('training', 'client_id = ? AND date = ?', array($id, $today));
 
+
+$old_date_timestamp = strtotime($today);
+$new_date = date('Y-m', $old_date_timestamp);
+
 $c1 = 0;
 $p1 = 0;
 $f1 = 0;
 $ca = 0;
+$cm1 = 0;
+$pm1 = 0;
+$fm1 = 0;
+$cma = 0;
 $day_stats = R::findOne('daystats', 'client_id = ? AND date = ?', array($id, $today));
 
 if ($day_stats) {
@@ -106,11 +109,11 @@ if ($day_stats) {
     $f1 = $day_stats['fats_added'];
     $ca = $day_stats['carbohydrates_added'];
 }
-$month_stats = R::findOne('monthstats', 'id = ?', array($day_stats['month_id']));
+$month_stats = R::findOne('monthstats', 'client_id = ? AND date = ?', array($id, $new_date));
 if ($month_stats) {
     $cm1 = $month_stats['calories_added'];
     $pm1 = $month_stats['proteins_added'];
-    $fm1 = $day_stats['fats_added'];
+    $fm1 = $month_stats['fats_added'];
     $cma = $month_stats['carbohydrates_added'];
 }
 $cp = (int) ($c1 * 100) / $user['cal'];
@@ -132,8 +135,6 @@ echo '<script type="text/javascript">$(document).ready(function () {
                     let fp2 = "' . $fpm . '";
                     let cap2 = "' . $capm . '";
                     updateProgress(cp, pp, fp,cap,cp2,pp2,fp2,cap2);});</script>';
-
-
 ?>
 <div class="menu_wrap">
     <a href="mainpage.php"> <div   class="col-md-1 navElementImg" ><img src="https://image.flaticon.com/icons/svg/25/25694.svg" class="homeImg" style="display:inline-block;"></div></a>
@@ -143,8 +144,7 @@ echo '<script type="text/javascript">$(document).ready(function () {
     <div   class="col-md-1 navElement"><h4 style="display: inline;margin-right: 1%"></h4>
         <a href="addexercise.php" class="navLinks">Додати вправу</a>
     </div>
-    <div   class="col-md-1 navElement"><h4 style="display: inline;margin-right: 1%"></h4>
-        <a href="checkstats.php" class="navLinks">Статистика</a>
+    <div   class="col-md-1 navElement">
     </div>
     <div class="col-md-4 navElementName"><h2 class="webName">Рахуємо калорії</h2></div>
     <div style="text-align: right; height: 100%; padding-top:13px;" class="col-md-3 "><h4 style="text-align: right; display: inline; color: white; margin-right: 1%;  "><?php echo $user['fname'] . ' ' . $user['name'] . ' ' . $user['pob']; ?></h4>
@@ -228,23 +228,23 @@ echo '<script type="text/javascript">$(document).ready(function () {
                 <span class="prodConsumedFats col-md-2">Жири</span>
                 <span class="prodConsumedCarbo col-md-2">Вуглеводи</span>
             </div>
-<?php
-foreach ($meals as $meal):
-    $product = R::findOne('products', 'id = ?', array($meal['product_id']));
-    $pc = $product['caloriess'];
-    $pf = $product['fats'];
-    $pp = $product['proteins'];
-    $pca = $product['carbohydrates'];
-    ?>
+            <?php
+            foreach ($meals as $meal):
+                $product = R::findOne('products', 'id = ?', array($meal['product_id']));
+                $pc = $product['caloriess'];
+                $pf = $product['fats'];
+                $pp = $product['proteins'];
+                $pca = $product['carbohydrates'];
+                ?>
                 <div class = " well" style="padding-bottom:30px">
                     <div class = "prodConsName col-md-4"><?php echo $product['name']; ?></div>
                     <div class = "prodConsumedPort col-md-1"><?php echo $meal['portion']; ?></div> 
-                    <div class = "prodConsumedCal col-md-2"><?php echo $pc*$meal['portion']/100; ?></div>
-                    <div class = "prodConsumedProt col-md-2"><?php echo $pp*$meal['portion']/100; ?></div>
-                    <div class = "prodConsumedFats col-md-1"><?php echo $pf*$meal['portion']/100; ?></div>
-                    <div class = "prodConsumedCarbo col-md-2"><?php echo $pca*$meal['portion']/100; ?></div>
+                    <div class = "prodConsumedCal col-md-2"><?php echo $pc * $meal['portion'] / 100; ?></div>
+                    <div class = "prodConsumedProt col-md-2"><?php echo $pp * $meal['portion'] / 100; ?></div>
+                    <div class = "prodConsumedFats col-md-1"><?php echo $pf * $meal['portion'] / 100; ?></div>
+                    <div class = "prodConsumedCarbo col-md-2"><?php echo $pca * $meal['portion'] / 100; ?></div>
                 </div>
-<?php endforeach; ?>
+            <?php endforeach; ?>
         </div>
 
         <div class="well" style="width: 40%">
@@ -254,21 +254,21 @@ foreach ($meals as $meal):
                 <span class="prodConsumedCal col-md-1">Час</span>
                 <span class="prodConsumedProt col-md-3">Витрачено</span>
             </div>
-<?php
-foreach ($training as $tr):
-    $ex = R::findOne('exercises', 'id = ?', array($tr['exercise_id']));
-    $en = $ex['name'];
-    $ei = $ex['intensity'];
-    $et = $tr['time'];
-    $es = $et * $ei * 10;
-    ?>
+            <?php
+            foreach ($training as $tr):
+                $ex = R::findOne('exercises', 'id = ?', array($tr['exercise_id']));
+                $en = $ex['name'];
+                $ei = $ex['intensity'];
+                $et = $tr['time'];
+                $es = $et * $ei * 10;
+                ?>
                 <div class="well" style="padding-bottom:30px">
                     <span class="prodConsName col-md-5"><?php echo $en; ?></span>
                     <span class="prodConsumedPort col-md-3"><?php echo $ei; ?></span>
                     <span class="prodConsumedCal col-md-1"><?php echo $et; ?></span>
                     <span class="prodConsumedProt col-md-3"><?php echo $es; ?></span>
                 </div>
-<?php endforeach; ?>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>

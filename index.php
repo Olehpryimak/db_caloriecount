@@ -7,7 +7,6 @@ class User {
     var $id;
     var $timezone;
     var $date;
-    var $coach;
 
     function Gettz() {
         echo $this->$timezone;
@@ -16,6 +15,7 @@ class User {
     function Settz($tz) {
         $this->timezone = $tz;
     }
+
     function Getdate() {
         echo $this->$date;
     }
@@ -31,13 +31,46 @@ class User {
     function Setid($id) {
         $this->id = $id;
     }
-    
-    function GetCoach() {
-        echo $this->coach;
+
+}
+
+class Coach {
+
+    var $id;
+    var $timezone;
+    var $date;
+    var $client;
+
+    function Gettz() {
+        echo $this->$timezone;
     }
 
-    function SetCoach($coach) {
-        $this->coach = $coach;
+    function Settz($tz) {
+        $this->timezone = $tz;
+    }
+    
+    function GetClient() {
+        echo $this->$client;
+    }
+
+    function SetClient($tz) {
+        $this->client = $tz;
+    }
+
+    function Getdate() {
+        echo $this->$date;
+    }
+
+    function Setdate($tz) {
+        $this->date = $tz;
+    }
+
+    function Getid() {
+        echo $this->id;
+    }
+
+    function Setid($id) {
+        $this->id = $id;
     }
 
 }
@@ -237,8 +270,16 @@ class User {
                 $user = R::findOne('users', 'pnumber = ?', array($data['tel']));
                 if (!$user) {
                     $user = R::findOne('coachs', 'pnumber = ?', array($data['tel']));
-                }
-                if ($user) {
+                    $object = new Coach;
+                    $object->Setid($user['id']);
+                    $object->Settz($_POST['timezone']);
+                    $object->Setdate(date("Y-m-d"));
+
+
+                    $_SESSION ['logged_coach'] = $object;
+                    echo ''.
+                    '<script>document.location.href = "./mainpagetrainer.php"</script>';
+                } else if ($user) {
                     if (password_verify($data['password'], $user->password)) {
 
 
@@ -246,19 +287,12 @@ class User {
                         $object->Setid($user['id']);
                         $object->Settz($_POST['timezone']);
                         $object->Setdate(date("Y-m-d"));
-                        if(isset($user['sdate'])){
-                            $object->SetCoach(FALSE);
-                        }
-                        else{
-                            
-                            $object->SetCoach(TRUE);
-                        }
 
 
                         $_SESSION ['logged_user'] = $object;
-                        ?>
-                        <script>document.location.href = "./upload.php"</script>
-                        <?php
+                        echo ''.
+                        '<script>document.location.href = "./mainpage.php"</script>';
+                       
                     } else {
                         $errors2 [] = 'Пароль введено не правильно!';
                     }
@@ -270,12 +304,12 @@ class User {
                 if (!empty($errors2)) {
                     ?>
                     <div class="bg-warning" style="text-align: center; font-weight: bold">
-                        <?php echo array_shift($errors2); ?>
+                    <?php echo array_shift($errors2); ?>
                     </div>             
-                    <?php
+                        <?php
+                    }
                 }
-            }
-            ?>
+                ?>
 
             <div class="well">
 

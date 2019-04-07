@@ -1,0 +1,36 @@
+ul{
+    list-style: none;
+    text-align: center;
+}
+nav ul ul{
+    margin-top:10px; 
+    display: none;
+    position: absolute;
+    top: 100%;
+                           
+}
+nav a {
+			    display:block;
+			    color:#FFF;
+			    font-size:20px;
+			    text-decoration:none;
+			}
+ nav ul li:hover > ul{
+    display: inherit;
+}
+nav ul ul li {
+                            font-size: 16px; 
+                            background: #48cfad;
+			    float:none;
+			    display:list-item;
+			    position: relative;
+                            z-index: 20;
+                            border-bottom: black solid 1px;
+                            padding: 10px;
+			}
+nav ul ul li:hover {
+                            background: #37bc9b;
+			    float:none;
+			    display:list-item;
+			    position: relative;
+			}
