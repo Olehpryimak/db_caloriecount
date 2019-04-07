@@ -36,7 +36,7 @@ if (isset($data['add_client'])) {
 $today = date("Y-m-d");
 
 $clients = R::find('users', 'coach = ?', array(0));
-
+$clie = R::find('users', 'coach = ?', array(NULL));
 foreach ($clients as $client) {
     $name = $client['name'];
     $itemC = $client['fname'];
@@ -51,13 +51,19 @@ foreach ($clients as $client) {
                     let third = "' . $thirdname . '";    
                     addClientToTrainer(item,sname,third, phone,ids);});</script>';
 }
-foreach ($clients as $client) {
-    $item = $client['fname'];
-    $ids = $client['id'];
+foreach ($clie as $client) {
+    $name = $client['name'];
+    $itemC = $client['fname'];
+    $idsC = $client['id'];
+    $num = $client['pnumber'];
+    $thirdname = $client['pob'];
     echo '<script type="text/javascript">$(document).ready(function () {
-                    let item = "' . $item . '";
-                    let ids = "' . $ids . '";
-                    addClients(item,ids);});</script>';
+                    let item = "' . $itemC . '";
+                    let ids = "' . $idsC . '";
+                    let phone = "' . $num . '";
+                    let sname = "' . $name . '";
+                    let third = "' . $thirdname . '";    
+                    addClientToTrainer(item,sname,third, phone,ids);});</script>';
 }
 ?>
 <nav class="menu_wrap">
