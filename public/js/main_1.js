@@ -63,10 +63,14 @@ function addProd(name, cal, fats, prot, carbo,id) {
     $newLeft.show();
 }
 
-function updateProgress(calL, protL, fatsL, carboL){
+function updateProgress(calL, protL, fatsL, carboL, calM , protM, fatsM, carboM){
     $("#calProg").attr('value', calL);
     $("#protProg").attr('value', protL);
     $("#fatsProg").attr('value', fatsL);
     $("#carboProg").attr('value', carboL);
+    $("#calProgM").attr('value', calM);
+    $("#protProgM").attr('value', protM);
+    $("#fatsProgM").attr('value', fatsM);
+    $("#carboProgM").attr('value', carboM);
     
 }

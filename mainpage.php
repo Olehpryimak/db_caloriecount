@@ -106,17 +106,32 @@ if ($day_stats) {
     $f1 = $day_stats['fats_added'];
     $ca = $day_stats['carbohydrates_added'];
 }
+$month_stats = R::findOne('monthstats', 'id = ?', array($day_stats['month_id']));
+if ($month_stats) {
+    $cm1 = $month_stats['calories_added'];
+    $pm1 = $month_stats['proteins_added'];
+    $fm1 = $day_stats['fats_added'];
+    $cma = $month_stats['carbohydrates_added'];
+}
 $cp = (int) ($c1 * 100) / $user['cal'];
 $pp = (int) ($p1 * 100) / $user['prots'];
 $fp = (int) ($f1 * 100) / $user['fats'];
 $cap = (int) ($ca * 100) / $user['carb'];
+$cpm = (int) ($cm1 * 100) / $user['cal'];
+$ppm = (int) ($pm1 * 100) / $user['prots'];
+$fpm = (int) ($fm1 * 100) / $user['fats'];
+$capm = (int) ($cma * 100) / $user['carb'];
 
 echo '<script type="text/javascript">$(document).ready(function () {
                     let cp = "' . $cp . '";
                     let pp = "' . $pp . '";
                     let fp = "' . $fp . '";
                     let cap = "' . $cap . '";
-                    updateProgress(cp, pp, fp,cap);});</script>';
+                    let cp2 = "' . $cpm . '";
+                    let pp2 = "' . $ppm . '";
+                    let fp2 = "' . $fpm . '";
+                    let cap2 = "' . $capm . '";
+                    updateProgress(cp, pp, fp,cap,cp2,pp2,fp2,cap2);});</script>';
 
 
 ?>
@@ -177,27 +192,27 @@ echo '<script type="text/javascript">$(document).ready(function () {
             <div style="text-align: center"><h4>За місяць</h4></div>
             <div class="col-md-6">
                 <h5>Набрано калорій</h5>
-                <progress  max="100" value="75">
+                <progress id="calProgM" max="100" value="75">
                 </progress>
-                <h5>0/0</h5>
+                <h5><?php echo $cm1 . '/' . $user['cal']; ?></h5>
             </div>
             <div class="col-md-6">    
                 <h5>Набрано білків</h5>
-                <progress  max="100" value="25">
+                <progress  id="protProgM" max="100" value="25">
                 </progress>
-                <h5>0/0</h5>
+                <h5><?php echo $pm1 . '/' . $user['prots']; ?></h5>
             </div>
             <div class="col-md-6">
                 <h5>Набрано жирів</h5>
-                <progress  max="100" value="25">
+                <progress  id="fatsProgM" max="100" value="25">
                 </progress>
-                <h5>0/0</h5>
+                <h5><?php echo $fm1 . '/' . $user['fats']; ?></h5>
             </div>
             <div class="col-md-6">
                 <h5>Набрано вуглеводів</h5>
-                <progress  max="100" value="25">
+                <progress id="carboProgM" max="100" value="25">
                 </progress>
-                <h5>0/0</h5>
+                <h5><?php echo $cma . '/' . $user['carb']; ?></h5>
             </div>
         </div>
     </div>

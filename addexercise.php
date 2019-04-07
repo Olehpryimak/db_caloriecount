@@ -126,7 +126,7 @@ if (isset($data['add_training'])) {
             $n1->fats_added = ($f5 * $days + $day_['fats_added']) / ($days + 1);
             $n1->calories_added = ($c5 * $days + $day_['calories_added']) / ($days + 1);
             $n1->carbohydrates_added = ($ca5 * $days + $day_['carbohydrates_added']) / ($days + 1);
-            $n1->calories_waisted = ($cw5 * $days + $day_['calories_added']) / ($days + 1);
+            $n1->calories_waisted = ($cw5 * $days + $data['time'] * $exercises['intensity'] * 10)/ ($days + 1);
             $n1->date = $date5;
             $n1->days = $days + 1;
             R::store($n1);

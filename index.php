@@ -95,9 +95,9 @@ class User {
                         $cal = 447.6 + (9.2 * (int) $data['weight']) + (3.1 * (int) $data['height'] ) - (4.3 * $res);
                     }
                     $part = (int) ((int) $cal / 6);
-                    $fats = (int) ($part / 9);
-                    $prots = (int) ($part / 4);
-                    $carb = $part;
+                    $fats = (int) ($part );
+                    $prots = (int) ($part );
+                    $carb = 4 * $part;
                     // запис в базу даних
                     if (empty($errors)) {
                         $user = R::dispense('users');
